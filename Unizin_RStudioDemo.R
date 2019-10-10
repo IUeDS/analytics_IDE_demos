@@ -73,7 +73,7 @@ p2
 
 # Statistics
 t.test(data$Concentration.of.Effort ~ data$Motivations.Cat)
-mod <- glm(Concentration.of.Effort ~ data$Motivations.Cat, data=data)
+mod <- glm(Concentration.of.Effort ~ data$Motivations, data=data)
 summary(mod)
 
 # Saving data
