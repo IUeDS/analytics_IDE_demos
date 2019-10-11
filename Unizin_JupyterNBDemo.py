@@ -1,13 +1,13 @@
 
 # coding: utf-8
 
-# In[153]:
+# In[1]:
 
 
 # Remember to check working directory
 
 
-# In[212]:
+# In[44]:
 
 
 # Import relevant modules
@@ -15,9 +15,11 @@ import pandas as pd
 import matplotlib.pyplot as pt
 import seaborn as sns
 from scipy import stats as st
+# Set printing display option for non-exponential format
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
 
-# In[213]:
+# In[45]:
 
 
 # Python variable assignment
@@ -25,7 +27,15 @@ x = 123
 x
 
 
-# In[214]:
+# In[46]:
+
+
+# Unassigning a variable
+x = None 
+x
+
+
+# In[47]:
 
 
 # Lists are constructed using [] brackets
@@ -33,7 +43,7 @@ x = [1,2,3]
 x
 
 
-# In[215]:
+# In[48]:
 
 
 # List comprehension to add to elements in the list
@@ -41,7 +51,7 @@ y = [x+1 for x in x]
 y
 
 
-# In[216]:
+# In[49]:
 
 
 # Most of the time, you'll be working with more complex data structures and need more effective operations.
@@ -54,7 +64,7 @@ data = pd.read_csv('factor_scores.csv')
 data
 
 
-# In[217]:
+# In[50]:
 
 
 # Can use methods to describe and look at specific examples
@@ -62,38 +72,45 @@ data
 data.describe()
 
 
-# In[218]:
+# In[51]:
 
 
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.head.html
 data.head(5)
 
 
-# In[219]:
+# In[52]:
 
 
 data.mean(axis=0)
 
 
-# In[220]:
+# In[53]:
 
 
 data['Motivations'].mean()
 
 
-# In[221]:
+# In[54]:
 
 
 data['Motivations'].min()
 
 
-# In[222]:
+# In[55]:
 
 
 data['Motivations'].max()
 
 
-# In[223]:
+# In[56]:
+
+
+# There are multiple ways to get to a specific observation
+data.loc[data['double_hashedid']=="QYd/Tw04aPsBQuaQV8nK3w=="]
+
+
+# In[57]:
 
 
 # Handling Missing Data
@@ -102,7 +119,7 @@ data.dropna(inplace=True)
 data
 
 
-# In[224]:
+# In[58]:
 
 
 # Like R, there are a lot of way sto manipulate data
@@ -112,24 +129,24 @@ data.loc[data.Motivations > 0, 'Motivations_Cat'] = 'Hi'
 data
 
 
-# In[200]:
+# In[59]:
 
 
 # Using apply method and lambda function
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.apply.html
-data['Visit.Frequency_Cat'] = data['Visit Frequency'].apply(lambda x: 'Lo' if x <= 0 else 'Hi')
+data['Visit_Frequency_Cat'] = data['Visit Frequency'].apply(lambda x: 'Lo' if x <= 0 else 'Hi')
 data
 
 
-# In[204]:
+# In[60]:
 
 
 # Grouping data for summary
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html
-data.groupby(['Motivations_Cat','Visit.Frequency_Cat']).agg({'double_hashedid':'count'})
+data.groupby(['Motivations_Cat','Visit_Frequency_Cat']).agg({'double_hashedid':'count'})
 
 
-# In[205]:
+# In[61]:
 
 
 # Plotting Data
@@ -137,7 +154,7 @@ data.groupby(['Motivations_Cat','Visit.Frequency_Cat']).agg({'double_hashedid':'
 data.plot(kind = 'scatter',x='Motivations',y='Concentration of Effort',color='black')
 
 
-# In[206]:
+# In[62]:
 
 
 # There are also many graphing options for python
@@ -145,14 +162,14 @@ data.plot(kind = 'scatter',x='Motivations',y='Concentration of Effort',color='bl
 plot = sns.regplot(x='Motivations',y='Concentration of Effort',data=data)
 
 
-# In[207]:
+# In[63]:
 
 
 # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.boxplot.html
 data.boxplot(column='Concentration of Effort',by='Motivations_Cat',figsize=(4,6))
 
 
-# In[229]:
+# In[64]:
 
 
 # Statistics 
@@ -163,7 +180,7 @@ t_test = st.ttest_ind(Motivations_Lo,Motivations_Hi)
 print("The t-statistic is %.3f; the p-value is %.3f"%t_test) 
 
 
-# In[209]:
+# In[65]:
 
 
 # Regression 
@@ -172,6 +189,6 @@ print("The t-statistic is %.3f; the p-value is %.3f"%t_test)
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 data.rename(columns={'Concentration of Effort':'COE'},inplace=True)
-results = smf.ols('COE ~ C(Motivations_Cat)',data=data).fit()
+results = smf.ols('COE ~ Motivations',data=data).fit()
 results.summary()
 
